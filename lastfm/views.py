@@ -2,7 +2,7 @@
 import requests
 import json
 
-from django.shortcuts import render, render_to_response
+from django.shortcuts import render
 from django.template import RequestContext
 from django.http import HttpResponse, HttpResponseRedirect
 from django.core.urlresolvers import reverse
@@ -16,7 +16,7 @@ from spotify.models import SpotifyUser
 def index(request):
 	if request.user.is_authenticated():
 		return HttpResponseRedirect(reverse("account_settings"))
-	return render_to_response('lastfm/index.html', locals(), context_instance=RequestContext(request))
+	return render(request, 'lastfm/index.html', locals())
 
 @login_required
 def lastfm_connect(request):
@@ -147,3 +147,50 @@ def lastfm_synchronise(request, period):
 	return HttpResponse("Your playlist is now created. Titles not found : {}<br /><br /> \
 		<a href=\"https://open.spotify.com/user/{}/playlist/{}\">Click here to check your playlist !</a>".format(notfound, sptf.username, playlist_id))
 
+@login_required
+def lastfm_annual_summary(request):
+	# On regarde si l'utilisateur est lié à LastFM
+	try:
+		lfm = LastfmUser.objects.filter(user=request.user)[:1].get()
+	except LastfmUser.DoesNotExist:
+		return HttpResponse("Your LastFM account is not linked. \
+		<a href=\"{}\">Link your LastFM account</a>".format(reverse("lastfm_connect")))
+
+	# On va aller chercher tous les titres de l'utilisateur cette année
+
+	lastfm = LastFMUtil()
+	print "Getting the TopTracks from LastFM..."
+
+	try:
+		response = lastfm.makeAPICall("user.gettoptracks",lfm.username, \
+		"&period=6month") # 1420066800 = 1 janvier 2015 00:00
+	except:
+		raise
+		return HttpResponse("LastFM error (or timed out)")
+
+	# On va clean un peu le tableau de LastFM
+	# Pour les titres
+	toptracks = []
+	topartists = {}
+
+	for track in response["toptracks"]['track']:
+		rank = int(track['@attr']['rank'])
+
+		if track['name'] == "Hysteria":
+			print track
+
+		toptracks.append({"title":track['name'], "artist": track['artist']['name'], "playcount":track['playcount']})
+		try:
+			topartists[track['artist']['name']] += int(track['playcount'])
+		except KeyError:
+			topartists[track['artist']['name']] = int(track['playcount'])
+
+		#print track
+
+	#print toptracks
+	#print topartists
+
+	#from operator import itemgetter
+	#sorted_keys = sorted(topartists.items(), key=itemgetter(1), reverse=True)
+
+	return render(request, 'lastfm/annual_summary.html', locals())
