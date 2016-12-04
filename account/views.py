@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from django.shortcuts import render, render_to_response
+from django.shortcuts import render, render
 from django.contrib import auth
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, HttpResponseRedirect
@@ -28,7 +28,7 @@ def login(request):
 				if user.is_active:
 					# User trouvé ! On peut le connecter
 					auth.login(request, user)
-					
+
 					# On va check si l'utilisateur venait d'une page ou pas, si oui on le redirige, sinon on l'envoi sur les settings
 					if "next" in request.GET:
 						return HttpResponseRedirect(request.GET["next"])
@@ -44,7 +44,7 @@ def login(request):
 		# Page de base
 		form = LoginForm()
 
-	return render_to_response('account/login.html', locals(), context_instance=RequestContext(request))
+	return render(request, 'account/login.html', locals())
 
 def logout(request):
 	auth.logout(request)
@@ -53,19 +53,19 @@ def logout(request):
 @login_required
 def settings(request):
 	request.user.isLinked = {}
-	
-	# On regarde si l'utilisateur a lié son compte LastFM 
+
+	# On regarde si l'utilisateur a lié son compte LastFM
 	try:
 		lfm = LastfmUser.objects.filter(user=request.user)[:1].get()
 		request.user.isLinked['lfm'] = True
 	except LastfmUser.DoesNotExist:
 		request.user.isLinked['lfm'] = False
 
-	# On regarde si l'utilisateur a lié son compte Spotify 
+	# On regarde si l'utilisateur a lié son compte Spotify
 	try:
 		sptf = SpotifyUser.objects.filter(user=request.user)[:1].get()
 		request.user.isLinked['sptf'] = True
 	except SpotifyUser.DoesNotExist:
 		request.user.isLinked['sptf'] = False
 
-	return render_to_response('account/settings.html', locals(), context_instance=RequestContext(request))
+	return render(request, 'account/settings.html', locals())
