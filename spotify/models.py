@@ -6,3 +6,6 @@ class SpotifyUser(models.Model):
 	username = models.CharField(max_length=255, blank=True)
 	token = models.CharField(max_length=255, blank=True)
 	refresh_token = models.CharField(max_length=255, blank=True)
+
+	def __unicode__(self):
+		return "%s - %s" % (self.username, self.user)
