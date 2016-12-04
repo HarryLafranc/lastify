@@ -1,0 +1,27 @@
+<html>
+<head>
+	<title>Lastify - Annual Summary</title>
+</head>
+<body>
+
+
+<h1>Lastify</h1>
+
+<h1>Your TopTracks of the year</h1>
+<ul>
+{% for track in toptracks %}
+	<li>{{ forloop.counter }} : <strong>{{ track.title }}</strong> - {{ track.artist }} <i>({{ track.playcount }} écoutes)</i></li>
+{% endfor %}
+</ul>
+
+<h1>Your TopArtists of the year</h1>
+
+<ul>
+{% for name, counter in sorted_keys %}
+	<li>{{ forloop.counter }} : {{ name }} <i>({{ counter }} écoutes)</i></li>
+{% endfor %}
+</ul>
+
+
+</body>
+</html>

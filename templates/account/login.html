@@ -1,0 +1,16 @@
+{% extends "account/skeleton.html" %}
+
+{% block title %}Connexion - Lastify{% endblock %}
+
+{% block body_content %}
+<h1>Connexion</h1>
+<p>(ptain comme c moch mdr)</p>
+
+{% if error %}<p class="error_message">{{ msg }}</p>{% endif %}
+
+<form action="" method="post">
+    {% csrf_token %}
+    {{ form }}
+    <input type="submit" value="Submit" />
+</form>
+{% endblock %}

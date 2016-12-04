@@ -1,0 +1,41 @@
+{% extends "account/skeleton.html" %}
+
+{% block title %}Paramètres - Lastify{% endblock %}
+
+{% block body_content %}
+<h1>Paramètres</h1>
+
+<p>Bienvenue, <strong>{{ request.user.username }}</strong> !</p>
+<p>
+{% if request.user.isLinked.lfm %}Votre compte est lié avec le compte LastFM "{{ lfm.username }}".<br />{% endif %}
+{% if request.user.isLinked.sptf %}Votre compte est lié avec le compte Spotify "{{ sptf.username }}".{% endif %}
+</p>
+
+<ul>
+	{% if not request.user.isLinked.lfm %}
+		<li><a href="{% url 'lastfm_connect' %}">Lier mon compte LastFM</a></li>
+	{% else %}
+		<li><a href="{% url 'lastfm_unlink' %}">Délier mon compte LastFM</a></li>
+	{% endif %}
+	{% if not request.user.isLinked.sptf %}
+		<li><a href="{% url 'spotify_connect' %}">Lier mon compte Spotify</a></li>
+	{% else %}
+		<li><a href="{% url 'spotify_unlink' %}">Délier mon compte Spotify</a></li>
+	{% endif %}
+	{% if request.user.is_staff %}<li><a href="/admin">Administration</a></li>{% endif %}
+	<li><a href="{% url 'account_logout' %}">Déconnexion</a></li>
+</ul>
+
+{% if request.user.isLinked.lfm and request.user.isLinked.sptf %}
+<h3>Créer une playlist Spotify selon :</h3>
+
+<ul>
+	<li><a href="{% url 'lastfm_synchronise' 'overall' %}">Mon top depuis toujours</a></li>
+	<li><a href="{% url 'lastfm_synchronise' '7day' %}">Mon top hebdomadaire</a></li>
+	<li><a href="{% url 'lastfm_synchronise' '1month' %}">Mon top mensuel</a></li>
+	<li><a href="{% url 'lastfm_synchronise' '3month' %}">Mon top trimestriel</a></li>
+	<li><a href="{% url 'lastfm_synchronise' '6month' %}">Mon top semestriel</a></li>
+	<li><a href="{% url 'lastfm_synchronise' '12month' %}">Mon top annuel</a></li>
+</ul>
+{% endif %}
+{% endblock %}
