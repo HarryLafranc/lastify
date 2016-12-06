@@ -107,7 +107,7 @@ def lastfm_synchronise(request, period):
 	lastfm = LastFMUtil()
 	print "Getting the TopTracks from LastFM..."
 	response = lastfm.makeAPICall("user.gettoptracks",lfm.username, \
-		"&limit=15&period={}".format(period))
+		"&limit=25&period={}".format(period))
 
 	if not response:
 		return HttpResponse("LastFM timed out")
