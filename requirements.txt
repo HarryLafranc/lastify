@@ -1,4 +1,4 @@
-Django==1.10.4
+Django==2.2.24
 contextlib2==0.5.4
 ecdsa==0.13
 paramiko==2.0.2
