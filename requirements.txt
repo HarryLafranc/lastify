@@ -1,7 +1,7 @@
 Django==1.10.4
 contextlib2==0.5.4
 ecdsa==0.13
-paramiko==2.0.2
+paramiko==2.10.1
 psycopg2==2.6.2
 pyasn1==0.1.9
 pycrypto==2.6.1
