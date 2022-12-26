@@ -8,5 +8,5 @@ pycrypto==2.6.1
 raven==5.32.0
 requests==2.12.3
 urllib3==1.19.1
-wheel==0.29.0
+wheel==0.38.1
 wsgiref==0.1.2
